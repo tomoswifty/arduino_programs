@@ -13,13 +13,13 @@ The code for 1000 in particular has been rewritten as a template.
 Files starting with tunnel_ are used for tunnel inspections developed in collaboration with Nishimatsu Construction Co.
 Unit 1004 is not included in the numbering because it is this tunnel model.
 
-old is stored only locally on the server and is excluded from git management.
+The old directory is stored only locally on the server and is excluded from git management.
 
 ## Installation
-Download the software by `git clone` in an arbitrary directory.
-Open `.ino` with Arduino IDE.
-
+You can download it by `Download ZIP` in an arbitrary directory or by `git clone`.
+Open `.ino` with the Arduino IDE; the installation of the Arduino IDE is not described here.
+```
+git clone https://github.com/nakayama-software/arduino_programs.git
+```
 ## Writing a program
 Select `Arduino Mega or Mega2560` in Arduino IDE and write the program by specifying the port.
-
-Translated with www.DeepL.com/Translator (free version)
