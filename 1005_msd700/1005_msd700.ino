@@ -43,16 +43,16 @@ int batteryV = 0;
 //#define External_emergency_stop_relay 20
 
 //レシーバーピン割振
-const int ch1 = 6; // right horizontal 
-const int ch3 = 8; // right vertical 
-const int ch2 = 7; // left vertical 
-const int ch4 = 9; // left horizontal 
-const int ch5 = 10; //sw(B) for convert FWD/REV direction 
+const int ch1 = 8; // right horizontal 
+const int ch3 = 6; // right vertical 
+const int ch2 = 9; // left vertical 
+const int ch4 = 7; // left horizontal 
+// const int ch5 = 10; //sw(B) for convert FWD/REV direction 
 const int ch7 = 12; /// VR channel 
-const int switcherIn = 11; // ch6 switch input 
+const int switcherIn = 10;// 11; // ch6 switch input 
 
 //モード設定
-int gMode = 0; //バケットモード:1, ブレードモード:0
+int gMode = 1; // 0; //バケットモード:1, ブレードモード:0
 
 //レシーバー用変数
 int VR = 0;
@@ -68,16 +68,16 @@ double liftData = 0;
 double dumpData = 0;
 
 
-void AttachmentModeChange(){
-  int val=digitalRead(ch5);
-   if (val == 1){
-      gMode=1;
-  }
-   else if(val == 0){
-      gMode=0;
-   }
-  //Serial.println(val);
-}
+// void AttachmentModeChange(){
+//   int val=digitalRead(ch5);
+//    if (val == 1){
+//       gMode=1;
+//   }
+//    else if(val == 0){
+//       gMode=0;
+//    }
+//   //Serial.println(val);
+// }
 
 void setup() {
 
@@ -124,7 +124,7 @@ void setup() {
   pinMode(ch3, INPUT);
   pinMode(ch2, INPUT);
   pinMode(ch4, INPUT);
-  pinMode(ch5, INPUT);
+  // pinMode(ch5, INPUT);
   pinMode(ch7, INPUT);
   pinMode(switcherIn, INPUT);
 
@@ -155,7 +155,7 @@ void setup() {
 }
 
 void loop() {
-  AttachmentModeChange(); //バケットモードとブレードモードの切り替え
+  // AttachmentModeChange(); //バケットモードとブレードモードの切り替え
   switcher = pulseIn(switcherIn, HIGH);
   batteryData(); // battery voltage presentation
   
@@ -372,8 +372,8 @@ void lift(int pulse){
   } else {
     canLift = false;
   }
-  digitalWrite(liftFWD, (!dirLift) & canLift);//dirLift->(!dirLift)//入れ替え20220909
-  digitalWrite(liftREV, dirLift & canLift);
+  digitalWrite(liftFWD, dirLift & canLift); // dirLift -> (!dirLift)//入れ替え20220909
+  digitalWrite(liftREV, (!dirLift) & canLift);
 }
 
 // アームダンプ関数
