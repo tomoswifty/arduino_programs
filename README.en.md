@@ -6,7 +6,7 @@
 <img src="./photo/100x.png" width="300" />
 </div>
 
-Files beginning with the numbers 100 through represent machines that have been completed and shipped for demonstration.
+Files beginning with the numbers 1000 through represent machines that have been completed and shipped to the demonstration.
 Each number represents an individual machine.
 The code for 1000 in particular has been rewritten as a template.
 
