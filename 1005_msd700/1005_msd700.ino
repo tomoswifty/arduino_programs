@@ -32,24 +32,26 @@
 #define liftFeedBack A0 // violet cable
 #define dumpFeedBack A1 // violet cable
 
+//動力リレー用リレーピン割振
+#define switcherOut 20 
+
+//DO Harness バッテリレベル監視->通知
+#define soc1 22 // DO4
+#define soc2 24 // DO5
+#define RedLED 16 //pcb extentions D PIN 6
+
 //battery feedback 
 int batteryPin = A2; // battery voltage reader
 int batteryV = 0;
 
-
-//動力リレー用リレーピン割振
-#define switcherOut 20 //5 // switch output
-//外付け非常停止スイッチ用リレー
-//#define External_emergency_stop_relay 20
-
 //レシーバーピン割振
-const int ch1 = 8; // right horizontal 
-const int ch3 = 6; // right vertical 
-const int ch2 = 9; // left vertical 
-const int ch4 = 7; // left horizontal 
-// const int ch5 = 10; //sw(B) for convert FWD/REV direction 
-const int ch7 = 12; /// VR channel 
-const int switcherIn = 10;// 11; // ch6 switch input 
+const int CH1 = 8; // right horizontal 
+const int CH2 = 9; // left vertical 
+const int CH3 = 6; // right vertical 
+const int CH4 = 7; // left horizontal 
+// const int CH5 = 10; //sw(B) for convert FWD/REV direction 
+const int CH6 = 10;// 11; // CH6 switch input 
+const int CH7 = 12; /// VR channel 
 
 //モード設定
 int gMode = 1; // 0; //バケットモード:1, ブレードモード:0
@@ -67,139 +69,7 @@ int gap;
 double liftData = 0;
 double dumpData = 0;
 
-
-// void AttachmentModeChange(){
-//   int val=digitalRead(ch5);
-//    if (val == 1){
-//       gMode=1;
-//   }
-//    else if(val == 0){
-//       gMode=0;
-//    }
-//   //Serial.println(val);
-// }
-
-void setup() {
-
-  Serial.begin(9600);
-
-  //モータードライバー速度設定
-  pinMode(mmLPin, OUTPUT);
-  pinMode(mmRPin, OUTPUT);
-
-  //右モータードライバーアウトプット
-  pinMode(mRightFWD, OUTPUT);
-  pinMode(mRightREV, OUTPUT);
-  pinMode(stopModeR, OUTPUT);
-  pinMode(m0R, OUTPUT);
-  pinMode(alarmResetR, OUTPUT);
-  pinMode(mbFreeR, OUTPUT);
-
-  //右モータードライバーインプット
-  pinMode(alarmOutRN, INPUT);
-  pinMode(wngRN, INPUT);
-  pinMode(speedOutR, INPUT);
-
-  //左モータードライバーアウトプット
-  pinMode(mLeftFWD, OUTPUT);
-  pinMode(mLeftREV, OUTPUT);
-  pinMode(stopModeL, OUTPUT);
-  pinMode(m0L, OUTPUT);
-  pinMode(alarmResetL, OUTPUT);
-  pinMode(mbFreeL, OUTPUT);
-
-  //左モータードライバーインプット
-  pinMode(alarmOutLN, INPUT);
-  pinMode(wngLN, INPUT);
-  pinMode(speedOutL, INPUT);
-
-  //シリンダーモータードライバー
-  pinMode(liftFWD, OUTPUT);
-  pinMode(liftREV, OUTPUT);
-  pinMode(dumpFWD, OUTPUT);
-  pinMode(dumpREV, OUTPUT);
-
-  //レシーバー
-  pinMode(ch1, INPUT);
-  pinMode(ch3, INPUT);
-  pinMode(ch2, INPUT);
-  pinMode(ch4, INPUT);
-  // pinMode(ch5, INPUT);
-  pinMode(ch7, INPUT);
-  pinMode(switcherIn, INPUT);
-
-  //動力リレー用リレー
-  pinMode(switcherOut, OUTPUT);
-
-  //外付け非常停止スイッチ用リレー
-//  pinMode(External_emergency_stop_relay,OUTPUT);
-
-  //アームフィードバック
-  pinMode(liftFeedBack, INPUT);
-  pinMode(dumpFeedBack, INPUT);
-
-  // HIGH:時間設定 LOW:瞬時停止
-  digitalWrite(stopModeR, LOW);
-  digitalWrite(stopModeL, LOW);
-  
-  // HIGH:速度指定を外部入力 LOW:内部速度設定器
-  digitalWrite(m0R, HIGH);
-  digitalWrite(m0L, HIGH);
-  
-  //HIGH:ブレーキ解放 LOW:ブレーキ保持
-  digitalWrite(mbFreeR, HIGH);
-  digitalWrite(mbFreeL, HIGH);
-
-  //Battery Pin
-  pinMode(batteryPin, INPUT);
-}
-
-void loop() {
-  // AttachmentModeChange(); //バケットモードとブレードモードの切り替え
-  switcher = pulseIn(switcherIn, HIGH);
-  batteryData(); // battery voltage presentation
-  
-  if (switcher > 1550) {
-    digitalWrite(switcherOut, LOW); //動力リレーON
-    //digitalWrite(External_emergency_stop_relay,LOW);
-    VR = pulseIn(ch7, HIGH); //ch7の計測を開始
-
-    if (VR > 1700) {
-      leftXb = leftXa;
-      rightX = pulseIn(ch1, HIGH); // ch1の計測を開始
-      rightY = pulseIn(ch3, HIGH); // ch3の計測を開始
-      leftX = pulseIn(ch2, HIGH);  // ch2の計測を開始
-      leftY = pulseIn(ch4, HIGH);  // ch4の計測を開始
-      leftXa = leftX;
-
-      gap = abs(leftXb - leftXa);
-      if (leftX < 1000 || leftX > 2000) {
-        leftX = leftXb;
-        leftXa = leftXb;
-      } else {
-        leftX = leftX;
-        leftXa = leftXa;
-      }
-
-      //アーム動作
-      lift(rightY);
-      dump(rightX);
-
-      // モーター動作
-      motor(leftX, leftY);
-    } else {
-      stopMachine();
-    }
-  } else {
-    digitalWrite(switcherOut, HIGH);
-    // digitalWrite(External_emergency_stop_relay,HIGH);
-    stopMachine();
-  }
-}
-
-// モーター停止関数
 void stopMachine() {
-
   //モーター速度0
   analogWrite(mmLPin, 0);
   analogWrite(mmRPin, 0);
@@ -216,7 +86,6 @@ void stopMachine() {
 
   // STOP表示
   //Serial.println(" Stop ");
-
 }
 
 // モーター関数
@@ -419,11 +288,32 @@ void dump(int pulse){
   //}
 }
 
+void attachmentModeChange(){
+  int val=digitalRead(CH5);
+   if (val == 1){
+      gMode=1;
+  }
+   else if(val == 0){
+      gMode=0;
+   }
+  //Serial.println(val);
+}
+
+void doHarness(){
+   if(digitalRead(soc1) == HIGH && digitalRead(soc2) == HIGH){
+        digitalWrite(RedLED,HIGH); 
+        //Serial.println("battery is LOW. 25% cherged");
+    }
+    else{
+        digitalWrite(RedLED,LOW); 
+        //Serial.println("battery is cherged");
+    }
+}
 
 void batteryData(){
       batteryV = analogRead(batteryPin);
-      double batteryVo = ((batteryV+0.5)*5.00)/1024;
-      double batteryVoltage = batteryVo*30.00/5.00;
+      double batteryVo = ((batteryV + 0.5) * 5.00) / 1024;
+      double batteryVoltage = batteryVo * 30.00 / 5.00;
       
       Serial.print(batteryV); 
       Serial.print(","); Serial.print(batteryVo);
@@ -435,4 +325,123 @@ void batteryData(){
       Serial.print(","); Serial.print(leftY); 
       Serial.print(","); Serial.print(rightX); 
       Serial.print(","); Serial.println(rightY);
+}
+
+
+
+void setup() {
+  Serial.begin(9600);
+
+  //モータードライバー速度設定
+  pinMode(mmLPin, OUTPUT);
+  pinMode(mmRPin, OUTPUT);
+
+  //右モータードライバーアウトプット
+  pinMode(mRightFWD, OUTPUT);
+  pinMode(mRightREV, OUTPUT);
+  pinMode(stopModeR, OUTPUT);
+  pinMode(m0R, OUTPUT);
+  pinMode(alarmResetR, OUTPUT);
+  pinMode(mbFreeR, OUTPUT);
+
+  //右モータードライバーインプット
+  pinMode(alarmOutRN, INPUT);
+  pinMode(wngRN, INPUT);
+  pinMode(speedOutR, INPUT);
+
+  //左モータードライバーアウトプット
+  pinMode(mLeftFWD, OUTPUT);
+  pinMode(mLeftREV, OUTPUT);
+  pinMode(stopModeL, OUTPUT);
+  pinMode(m0L, OUTPUT);
+  pinMode(alarmResetL, OUTPUT);
+  pinMode(mbFreeL, OUTPUT);
+
+  //左モータードライバーインプット
+  pinMode(alarmOutLN, INPUT);
+  pinMode(wngLN, INPUT);
+  pinMode(speedOutL, INPUT);
+
+  //シリンダーモータードライバー
+  pinMode(liftFWD, OUTPUT);
+  pinMode(liftREV, OUTPUT);
+  pinMode(dumpFWD, OUTPUT);
+  pinMode(dumpREV, OUTPUT);
+
+  //レシーバー
+  pinMode(CH1, INPUT);
+  pinMode(CH3, INPUT);
+  pinMode(CH2, INPUT);
+  pinMode(CH4, INPUT);
+  // pinMode(CH5, INPUT);
+  pinMode(CH7, INPUT);
+  pinMode(CH6, INPUT);
+
+  //動力リレー用リレー
+  pinMode(switcherOut, OUTPUT);
+
+  //外付け非常停止スイッチ用リレー
+//  pinMode(External_emergency_stop_relay,OUTPUT);
+
+  //アームフィードバック
+  pinMode(liftFeedBack, INPUT);
+  pinMode(dumpFeedBack, INPUT);
+
+  // HIGH:時間設定 LOW:瞬時停止
+  digitalWrite(stopModeR, LOW);
+  digitalWrite(stopModeL, LOW);
+  
+  // HIGH:速度指定を外部入力 LOW:内部速度設定器
+  digitalWrite(m0R, HIGH);
+  digitalWrite(m0L, HIGH);
+  
+  //HIGH:ブレーキ解放 LOW:ブレーキ保持
+  digitalWrite(mbFreeR, HIGH);
+  digitalWrite(mbFreeL, HIGH);
+
+  //Battery Pin
+  pinMode(batteryPin, INPUT);
+}
+
+void loop() {
+  // attachmentModeChange(); //バケットモードとブレードモードの切り替え
+  batteryData(); // battery voltage presentation
+  doHarness();  
+
+  switcher = pulseIn(CH6, HIGH);
+  if (switcher > 1550) {
+    digitalWrite(switcherOut, LOW); //動力リレーON
+    VR = pulseIn(CH7, HIGH); //ch7の計測を開始
+
+    if (VR > 1700) {
+      leftXb = leftXa;
+      rightX = pulseIn(CH1, HIGH); // CH1の計測を開始
+      rightY = pulseIn(CH3, HIGH); // CH3の計測を開始
+      leftX = pulseIn(CH2, HIGH);  // CH2の計測を開始
+      leftY = pulseIn(CH4, HIGH);  // CH4の計測を開始
+      leftXa = leftX;
+
+      gap = abs(leftXb - leftXa);
+      if (leftX < 1000 || leftX > 2000) {
+        leftX = leftXb;
+        leftXa = leftXb;
+      } else {
+        leftX = leftX;
+        leftXa = leftXa;
+      }
+
+      //アーム動作
+      lift(rightY);
+      dump(rightX);
+
+      // モーター動作
+      motor(leftX, leftY);
+    } else {
+      stopMachine();
+    }
+  } else {
+    digitalWrite(switcherOut, HIGH);
+    // digitalWrite(External_emergency_stop_relay,HIGH);
+    stopMachine();
+  }
 }
