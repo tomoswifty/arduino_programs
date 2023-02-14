@@ -288,16 +288,16 @@ void dump(int pulse){
   //}
 }
 
-void attachmentModeChange(){
-  int val=digitalRead(CH5);
-   if (val == 1){
-      gMode=1;
-  }
-   else if(val == 0){
-      gMode=0;
-   }
-  //Serial.println(val);
-}
+// void attachmentModeChange(){
+//   int val=digitalRead(CH5);
+//    if (val == 1){
+//       gMode=1;
+//   }
+//    else if(val == 0){
+//       gMode=0;
+//    }
+//   //Serial.println(val);
+// }
 
 void doHarness(){
    if(digitalRead(soc1) == HIGH && digitalRead(soc2) == HIGH){
