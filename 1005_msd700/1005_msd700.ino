@@ -401,6 +401,8 @@ void setup() {
 
   //Battery Pin
   pinMode(batteryPin, INPUT);
+
+  pinMode(RedLED, OUTPUT);
 }
 
 void loop() {
