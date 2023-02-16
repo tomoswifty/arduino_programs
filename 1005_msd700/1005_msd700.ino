@@ -226,12 +226,7 @@ void lift(int pulse){
   } else if (pulse <= thresholdLow) { 
     Extend = 1;
   }
-
-  //Serial.print("Extend => ");
-  //Serial.println(Extend);
-  //Serial.print("Retract => ");
-  //Serial.println(Retract);
-
+  
   if (Extend == 1) {
     dirLift = true;
     canLift = true;
@@ -263,11 +258,6 @@ void dump(int pulse){
   } else if (pulse <= thresholdLow) { 
     Retract = 1;
   }
-
-  //Serial.print("Extend => ");
-  //Serial.println(Extend);
-  //Serial.print("Retract => ");
-  //Serial.println(Retract);
 
   if (Extend == 1) {
     dirDump = true;
@@ -413,37 +403,29 @@ void loop() {
   switcher = pulseIn(CH6, HIGH);
   if (switcher > 1550) {
     digitalWrite(switcherOut, LOW); //動力リレーON
-    VR = pulseIn(CH7, HIGH); //ch7の計測を開始
 
-    if (VR > 1700) {
-      leftXb = leftXa;
-      rightX = pulseIn(CH1, HIGH); // CH1の計測を開始
-      rightY = pulseIn(CH3, HIGH); // CH3の計測を開始
-      leftX = pulseIn(CH2, HIGH);  // CH2の計測を開始
-      leftY = pulseIn(CH4, HIGH);  // CH4の計測を開始
-      leftXa = leftX;
-
-      gap = abs(leftXb - leftXa);
-      if (leftX < 1000 || leftX > 2000) {
-        leftX = leftXb;
-        leftXa = leftXb;
-      } else {
-        leftX = leftX;
-        leftXa = leftXa;
-      }
-
-      //アーム動作
-      lift(rightY);
-      dump(rightX);
-
-      // モーター動作
-      motor(leftX, leftY);
+    leftXb = leftXa;
+    rightX = pulseIn(CH1, HIGH); // CH1の計測を開始
+    rightY = pulseIn(CH3, HIGH); // CH3の計測を開始
+    leftX = pulseIn(CH2, HIGH);  // CH2の計測を開始
+    leftY = pulseIn(CH4, HIGH);  // CH4の計測を開始
+    leftXa = leftX;
+    gap = abs(leftXb - leftXa);
+    if (leftX < 1000 || leftX > 2000) {
+      leftX = leftXb;
+      leftXa = leftXb;
     } else {
-      stopMachine();
+      leftX = leftX;
+      leftXa = leftXa;
     }
+    //アーム動作
+    lift(rightY);
+    dump(rightX);
+    // モーター動作
+    motor(leftX, leftY);
+    
   } else {
     digitalWrite(switcherOut, HIGH);
-    // digitalWrite(External_emergency_stop_relay,HIGH);
     stopMachine();
   }
 }
