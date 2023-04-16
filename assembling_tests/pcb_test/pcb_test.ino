@@ -27,6 +27,24 @@ for test PCB board
 // #define LeftAlarmOutN 30
 // #define LeftmmPin 2
 
+void relayOff(){
+  Serial.println("all relays LOW");
+  // リレー左上から順に
+  digitalWrite(RightREV, LOW); // 31
+  digitalWrite(RightFWD, LOW); // 33
+  digitalWrite(LeftStopMode, LOW); // 35
+  digitalWrite(Leftm0, LOW); // 37
+  digitalWrite(LeftAlarmReset, LOW); // 39
+  digitalWrite(LeftmbFree, LOW); // 41
+
+  // 右上から順に
+  digitalWrite(LeftFWD, LOW); // 43
+  digitalWrite(LeftREV, LOW); // 45
+  digitalWrite(RightStopMode, LOW); // 47
+  digitalWrite(Rightm0, LOW); // 49
+  digitalWrite(RightAlarmReset, LOW); // 51
+  digitalWrite(RightmbFree, LOW); // 53
+}
 void relay(){
   int d=1000; // リレーHIGH時間
   char val;
@@ -36,22 +54,7 @@ void relay(){
     num = Serial.read();
     
     if (val == 'o'){
-      Serial.println("all relays LOW");
-      // リレー左上から順に
-      digitalWrite(RightREV, LOW); // 31
-      digitalWrite(RightFWD, LOW); // 33
-      digitalWrite(LeftStopMode, LOW); // 35
-      digitalWrite(Leftm0, LOW); // 37
-      digitalWrite(LeftAlarmReset, LOW); // 39
-      digitalWrite(LeftmbFree, LOW); // 41
-
-      // 右上から順に
-      digitalWrite(LeftFWD, LOW); // 43
-      digitalWrite(LeftREV, LOW); // 45
-      digitalWrite(RightStopMode, LOW); // 47
-      digitalWrite(Rightm0, LOW); // 49
-      digitalWrite(RightAlarmReset, LOW); // 51
-      digitalWrite(RightmbFree, LOW); // 53
+      relayOff();
     }
 
     //左側リレー個別確認
@@ -204,8 +207,8 @@ void relay(){
     delay(400);
     digitalWrite(RightmbFree, HIGH); // 53
     Serial.println("Right side Done");  
-    delay(400);
-
+    delay(800);
+    relayOff();
     }
   }
 }
