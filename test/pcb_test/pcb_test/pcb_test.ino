@@ -1,7 +1,8 @@
 /*
 2023-04-15
+tomoki sugimoto
 for test PCB board 
-1. relay
+  relay HIGH LOW test code
 */
 
 // #define 
