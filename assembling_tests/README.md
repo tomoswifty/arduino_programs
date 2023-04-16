@@ -1,5 +1,5 @@
 # PCBボードテストプログラムの使い方
-<img src="/Users/tomo/arduino_programs/photo/pcb/02_pcb_top.JPG" width="500">
+<img src="../photo/pcb/02_pcb_top.JPG" width="500">
 
 ## Arduino準備
 ## 1. プログラムを書き込む
@@ -20,6 +20,7 @@ Arduinoを接続して，ボードを選択．
 - `h` : 全てのリレーをHIGHにする
 - `l` : 左側のリレー（CR1〜6）をHIGHにする
 - `r` : 右側のリレー（CR7〜12）をHIGHにする
+
 以下，各リレーをHIGHにする
 - `1` : CR1
 - `2` : CR2
