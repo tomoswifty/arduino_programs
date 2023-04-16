@@ -45,6 +45,7 @@ void relayOff(){
   digitalWrite(RightAlarmReset, LOW); // 51
   digitalWrite(RightmbFree, LOW); // 53
 }
+
 void relay(){
   int d=1000; // リレーHIGH時間
   char val;
