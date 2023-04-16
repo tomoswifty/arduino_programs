@@ -31,9 +31,9 @@ Arduinoを接続して，ボードを選択．
 - `8` : CR8
 - `8` : CR8
 - `9` : CR9
-- `10` : CR10
-- `11` : CR11
-- `12` : CR12
+- `q` : CR10
+- `w` : CR11
+- `e` : CR12
 
 ## リレー対応表
 <img src="picture_pcb_/022_pcb_top_marked.png" width="500">
