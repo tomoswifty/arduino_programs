@@ -6,27 +6,19 @@ for test PCB board
 */
 
 // #define 
-#define RightmbFree 53 //
-#define RightAlarmReset 51 //
-#define Rightm0 49 //
-#define RightStopMode 47 //
-#define RightFWD 33 //
-#define RightREV 31 //
-// #define RightAlarmOut 40
-// #define RightwngN 38
-// #define RightSpeedOut 36
-// #define RightmmPin 3
+#define RightmbFree 53 
+#define RightAlarmReset 51 
+#define Rightm0 49 
+#define RightStopMode 47 
+#define RightFWD 33 
+#define RightREV 31 
 
-#define LeftREV 45 //
-#define LeftFWD 43 //
-#define LeftmbFree 41 //
-#define LeftAlarmReset 39 //
-#define Leftm0 37 //
-#define LeftStopMode 35 //
-// #define LeftSpeedOut 34
-// #define LeftwngN 32
-// #define LeftAlarmOutN 30
-// #define LeftmmPin 2
+#define LeftREV 45  
+#define LeftFWD 43 
+#define LeftmbFree 41 
+#define LeftAlarmReset 39 
+#define Leftm0 37 
+#define LeftStopMode 35 
 
 void relayOff(){
   Serial.println("all relays LOW");
@@ -50,10 +42,8 @@ void relayOff(){
 void relay(){
   int d=1000; // リレーHIGH時間
   char val;
-  int num;
   if (Serial.available() > 0){
     val = Serial.read();
-    num = Serial.read();
     
     if (val == 'o'){
       relayOff();
