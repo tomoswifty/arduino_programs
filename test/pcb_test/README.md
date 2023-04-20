@@ -1,20 +1,26 @@
 # PCBボードテストプログラムの使い方
+<div align="center">
 <img src="../../photo/pcb/02_pcb_top.JPG" width="500">
+</div>
 
 ## Arduino準備
 ## 1. プログラムを書き込む
 Arduinoを接続して，ボードを選択．
 
+<div align="center">
 <img src="../../photo/pcb/03_arduino_upload.png" width="800">
+</div>
 
 ## 2. シリアルモニタ(Serial Monitor)の起動
-
+<div align="center">
 <img src="../../photo/pcb/04_arduino_openSerialMonitor.png" width="800">
+</div>
 
 ## 3. コマンドを入力する
 シリアルモニタのコマンド窓にコマンドを入力して，`Enter`で送信．
-
+<div align="center">
 <img src="../../photo/pcb/05_arduino_sendCommand.png" width="800">
+</div>
 
 ## コマンド
 
@@ -39,7 +45,9 @@ Arduinoを接続して，ボードを選択．
 - `e` : CR12
 
 ## リレー対応表
+<div align="center">
 <img src="../../photo/pcb/022_pcb_top_marked.png" width="500">
+</div>
 
 ## 4. テスト方法
 1. コマンド`h`ですべてのリレーを動作させる．
